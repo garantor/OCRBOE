@@ -9,6 +9,8 @@ def parse_date(date_str):
         return None
 
 def extract_eta_dates(text):
+    print("Extracted Text 33333 :\n", text)
+    print("========================================")
     """
     Extracts start and/or end date from ETA approval text.
     Returns exact date strings and their datetime objects.
@@ -18,6 +20,13 @@ def extract_eta_dates(text):
                             text, re.IGNORECASE)
     match_until = re.search(r"valid until[:\-]?\s*(\d{1,2}\s+\w+\s+\d{4})", 
                             text, re.IGNORECASE)
+    
+
+
+    print("Extracted Text:\n", text)
+    print("========================================")
+    print("Match Range:", match_range)
+    print("Match Until:", match_until)
 
     if match_range:
         start_str = match_range.group(1)
