@@ -3,10 +3,16 @@ import base64
 import os, re
 from google.cloud import vision
 from utils import datetime_to_millis, extract_eta_dates
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'vision_key.json'
+
+
+CORS(app, origins=["http://localhost:8081"])
+
 
 def detect_text(content):
     client = vision.ImageAnnotatorClient()
@@ -44,12 +50,19 @@ def detect():
         return jsonify({"error": "No image provided."}), 400
 
     image_data = data['image']
+
+    print("Received image data:", image_data)
+    # Remove data URL prefix if present
+    if image_data.startswith('data:image'):
+        image_data = image_data.split(',', 1)[1]
+        print("splitted image data:", image_data)
     try:
         image_content = base64.b64decode(image_data)
         result = detect_text(image_content)
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
 
 if __name__ == '__main__':
     app.run(debug=True)
